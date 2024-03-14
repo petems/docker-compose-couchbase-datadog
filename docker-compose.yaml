@@ -1,0 +1,39 @@
+version: '3.7'
+
+services:
+  couchbase:
+    build: couchbase
+    ports:
+      - "127.0.0.1:8091-8095:8091-8095"
+      - "127.0.0.1:11210:11210"
+    labels:
+      com.datadoghq.ad.logs: '[{"source": "couchbase", "service": "couchbase"}]'
+    
+  datadog:
+    container_name: datadog-agent
+    build: datadog
+    depends_on:
+      couchbase:
+        condition: service_started
+    environment:
+      ## GLOBALS
+      - DD_API_KEY # The value will be taken from the .env file
+      - DD_SITE # The value will be taken from the .env file
+      - DD_HOSTNAME=localpro
+      - DD_TAGS=env:local owner:petems
+      - DD_AC_EXCLUDE=name:datadog-agent # exclude this container from data collection
+      ## LOGS https://docs.datadoghq.com/agent/docker/log/
+      - DD_LOGS_ENABLED=true
+      - DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL=true
+      ## LIVE PROCESSES https://docs.datadoghq.com/graphing/infrastructure/process/?tab=docker
+      - DD_PROCESS_AGENT_ENABLED=true
+      ## Datadog Debug Logs, uncomment to get louder logs
+      # - DD_LOG_LEVEL=debug
+    ports:
+      - 8126:8126/tcp # APM available from any host
+      - 8125:8125/udp # Dogstatsd
+    volumes:
+     - /var/run/docker.sock:/var/run/docker.sock:ro
+     - /proc/:/host/proc/:ro
+     - /sys/fs/cgroup:/host/sys/fs/cgroup:ro
+     - /etc/passwd:/etc/passwd:ro # LIVE PROCESSESdocker pull 
