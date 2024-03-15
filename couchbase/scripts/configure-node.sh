@@ -9,13 +9,13 @@ CONFIG_DONE_FILE=/opt/couchbase/var/lib/couchbase/container-configured
 config_done() {
   touch ${CONFIG_DONE_FILE}
   echo "Couchbase Admin UI: http://localhost:8091" \
-     "\nLogin credentials: Administrator / password" | tee /dev/fd/3
+     "\nLogin credentials: Administrator / password"
   echo "Stopping config-couchbase service"
   sv stop /etc/service/config-couchbase
 }
 
 if [ -e ${CONFIG_DONE_FILE} ]; then
-  echo "Container previously configured." | tee /dev/fd/3	
+  echo "Container previously configured."
   config_done	
 else	
   echo "Configuring Couchbase Server.  Please wait (~60 sec)..."
@@ -32,8 +32,8 @@ wait_for_uri() {
     if [ "x$status" = "x$expected" ]; then
       break
     fi
-    echo "$uri not up yet, waiting 2 seconds..."
-    sleep 2
+    echo "$uri not up yet, waiting 10 seconds..."
+    sleep 10
   done
   echo "$uri ready, continuing"
 }
@@ -47,8 +47,8 @@ wait_for_uri_with_auth() {
     if [ "x$status" = "x$expected" ]; then
       break
     fi
-    echo "$uri not up yet, waiting 2 seconds..."
-    sleep 2
+    echo "$uri not up yet, waiting 10 seconds..."
+    sleep 10
   done
   echo "$uri ready, continuing"
 }
