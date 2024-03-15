@@ -3076,35 +3076,4 @@ This check type has 1 instances. If you're looking for a different check instanc
 ## Caveats 
 * **DO NOT USE THIS SETUP IN PRODUCTION**: The username and password are hardcoded to Administrator/Password
 * This is a very simple development deployment, just 1 cluster
-* The startup process for Couchbase in the image is a little funky, we re-direct the output so the container can self-boot and it sometimes seems to overwrite the `/bin/` path for bash:
 
-```
-# bash
-/usr/bin/bash: 1: Couchbase: not found
-/usr/bin/bash: 2: Login: not found
-# cat /usr/bin/bash
-Couchbase Admin UI: http://localhost:8091
-Login credentials: Administrator / password
-```
-
-If that happens, just do a `apt-get install --reinstall bash` and you should be good to go:
-
-```
-# apt-get install -y --reinstall bash
-Reading package lists... Done
-Building dependency tree
-Reading state information... Done
-0 upgraded, 0 newly installed, 1 reinstalled, 0 to remove and 50 not upgraded.
-Need to get 639 kB of archives.
-After this operation, 0 B of additional disk space will be used.
-Get:1 http://archive.ubuntu.com/ubuntu focal-updates/main amd64 bash amd64 5.0-6ubuntu1.2 [639 kB]
-Fetched 639 kB in 0s (4584 kB/s)
-debconf: delaying package configuration, since apt-utils is not installed
-(Reading database ... 17339 files and directories currently installed.)
-Preparing to unpack .../bash_5.0-6ubuntu1.2_amd64.deb ...
-Unpacking bash (5.0-6ubuntu1.2) over (5.0-6ubuntu1.2) ...
-Setting up bash (5.0-6ubuntu1.2) ...
-update-alternatives: error: alternative path /usr/share/man/man7/bash-builtins.7.gz doesn't exist
-# bash
-root@05e8ca7e0186:/#
-```
