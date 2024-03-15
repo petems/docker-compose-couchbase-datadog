@@ -139,6 +139,12 @@ curl_check -u Administrator:password -X POST http://127.0.0.1:8095/query/service
 rm /opt/couchbase/create-dataset.json
 echo
 
-echo "Configuration completed!" | tee /dev/fd/3
+echo "Creating datadog role for metrics"
+# https://docs.couchbase.com/server/current/learn/security/roles.html
+wait_for_uri_with_auth http://127.0.0.1:8095/query/service 400
+sleep 3
+curl_check -u Administrator:password -X PUT http://localhost:8091/settings/rbac/users/local/datadog -d password="woofwoof" -d roles="ro_admin"
+
+echo "Configuration completed!"
 
 config_done
